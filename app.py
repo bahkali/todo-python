@@ -1,7 +1,6 @@
 from flask import Flask,request , abort,  render_template, redirect, url_for, jsonify
 from flask_sqlalchemy import SQLAlchemy 
 import sys
-# from flask_script import Manager
 from flask_migrate import Migrate, MigrateCommand
 
 app = Flask(__name__)
@@ -10,19 +9,22 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
+
 class Todo(db.Model):
+    """ create todo table schema"""
     __tablename__ = 'todos'
     id = db.Column(db.Integer, primary_key=True)
     description= db.Column(db.String(), nullable=False)
     completed = db.Column(db.Boolean, nullable=False, default=False)
+
     def __repr(self):
         return f'<Todo {self.id} {self.description}'
-#description-value = request.form.get('description')
 
-#data_str = request.data
-#data_dict = json.loads(data_str)
-
-# db.create_all() replace by flask db migrate
+"""
+db.create_all() take all class model and create those table in the 
+database but since implemented flask_migrate will do the functionality 
+if any change is made to the table
+"""
 
 @app.route('/todos/create', methods=['POST'])
 def create_todo():
@@ -62,6 +64,7 @@ def set_completed_todo(todo_id):
 
 @app.route('/todos/<todo_id>/delete', methods=['DELETE'])
 def delete_item_todo(todo_id):
+    """ delete item using the id"""
     try:
         Todo.query.filter_by(id=todo_id).delete()
         db.session.commit()
