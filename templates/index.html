@@ -34,43 +34,56 @@
     </style>
   </head>
   <body>
-    <form id="form" action="/todos/create" method="post">
-      <div>
-        <label for="name">Create a To-Do Item</label>
-        <input type="text" id="description" name="description" />
-        <input type="submit" value="Create" />
-      </div>
-    </form>
-    <hr />
-    <div id="error" class="hidden">Something went wrong!</div>
-    <ul id="todos">
-      {% for item in data %}
-      <li>
-        <input
-          type="checkbox"
-          class="check-completed"
-          data-id="{{ item.id}}"
-          {%
-          if
-          item.completed
-          %}
-          checked
-          {%
-          endif
-          %}
-        />
-        {{ item.description }}
-        <span
-          class="delete-item"
-          data-id="{{item.id}}"
-          class="delete-item"
-          style="color: red; cursor: pointer"
-        >
-          &cross;
-        </span>
-      </li>
-      {% endfor %}
-    </ul>
+    <div class="lists-wrapper">
+      <ul id="lists">
+        {% for list in lists %}
+        <li>
+          <a href="/lists/{{list.id}}">{{list.name}}</a>
+        </li>
+        {% endfor%}
+      </ul>
+    </div>
+    <div class="todos-wrapper">
+      <h4>{{ active_list.name }}</h4>
+      <form id="form" action="/todos/create" method="post">
+        <div>
+          <label for="name">Create a To-Do Item</label>
+          <input type="text" id="description" name="description" />
+          <input type="submit" value="Create" />
+        </div>
+      </form>
+      <hr />
+      <div id="error" class="hidden">Something went wrong!</div>
+      <ul id="todos">
+        {% for todo in todos %}
+        <li>
+          <input
+            type="checkbox"
+            class="check-completed"
+            data-id="{{ todo.id}}"
+            {%
+            if
+            todo.completed
+            %}
+            checked
+            {%
+            endif
+            %}
+          />
+          {{ todo.description }}
+          <span
+            class="delete-item"
+            data-id="{{todo.id}}"
+            class="delete-item"
+            style="color: red; cursor: pointer"
+          >
+            &cross;
+          </span>
+        </li>
+        {% endfor %}
+      </ul>
+    </div>
+
     <script>
       const deleteItems = document.querySelectorAll(".delete-item");
       for (let i = 0; i < deleteItems.length; i++) {
