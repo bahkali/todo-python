@@ -34,11 +34,34 @@
     </style>
   </head>
   <body>
+    <h2>A SAMPLE VERSION OF TODO APP</h2>
     <div class="lists-wrapper">
+      <h4>Todo Lists</h4>
+      <form id="form" action="/todos/create-list" method="post">
+        <div>
+          <label for="name">Create List</label>
+          <input type="text" id="list-name" name="list-name" />
+          <input type="submit" value="Create List" />
+        </div>
+      </form>
+      <hr />
       <ul id="lists">
         {% for list in lists %}
         <li>
+          <input
+            type="checkbox"
+            class="check-completed"
+            data-id="{{ list.id}}"
+          />
           <a href="/lists/{{list.id}}">{{list.name}}</a>
+          <span
+            class="delete-item"
+            data-id="{{list.id}}"
+            class="delete-item"
+            style="color: red; cursor: pointer"
+          >
+            &cross;
+          </span>
         </li>
         {% endfor%}
       </ul>
@@ -47,9 +70,9 @@
       <h4>{{ active_list.name }}</h4>
       <form id="form" action="/todos/create" method="post">
         <div>
-          <label for="name">Create a To-Do Item</label>
+          <label for="name">Create Task</label>
           <input type="text" id="description" name="description" />
-          <input type="submit" value="Create" />
+          <input type="submit" value="Create Taask" />
         </div>
       </form>
       <hr />
