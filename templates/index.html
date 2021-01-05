@@ -37,7 +37,7 @@
     <h2>A SAMPLE VERSION OF TODO APP</h2>
     <div class="lists-wrapper">
       <h4>Todo Lists</h4>
-      <form id="form" action="/todos/create-list" method="post">
+      <form id="list-form" action="/todos/create-list" method="post">
         <div>
           <label for="name">Create List</label>
           <input type="text" id="list-name" name="list-name" />
@@ -50,14 +50,13 @@
         <li>
           <input
             type="checkbox"
-            class="check-completed"
+            class="check-list-completed"
             data-id="{{ list.id}}"
           />
           <a href="/lists/{{list.id}}">{{list.name}}</a>
           <span
-            class="delete-item"
             data-id="{{list.id}}"
-            class="delete-item"
+            class="delete-list"
             style="color: red; cursor: pointer"
           >
             &cross;
@@ -67,7 +66,7 @@
       </ul>
     </div>
     <div class="todos-wrapper">
-      <h4>{{ active_list.name }}</h4>
+      <h2>TODO ITEMS</h2>
       <form id="form" action="/todos/create" method="post">
         <div>
           <label for="name">Create Task</label>
@@ -77,6 +76,7 @@
       </form>
       <hr />
       <div id="error" class="hidden">Something went wrong!</div>
+      <h4>{{ active_list.name }}</h4>
       <ul id="todos">
         {% for todo in todos %}
         <li>
@@ -120,6 +120,40 @@
           });
         };
       }
+      //Delete List
+      const deleteLists = document.querySelectorAll(".delete-list");
+      for (let i = 0; i < deleteLists.length; i++) {
+        const deleteList = deleteLists[i];
+        deleteList.onclick = function (e) {
+          console.log("delete List ");
+        };
+      }
+      //Create List
+      document.getElementById("list-form").onsubmit = function (e) {
+        e.preventDefault();
+        fetch("/todoLists/create", {
+          method: "POST",
+          body: JSON.stringify({
+            listName: document.getElementById("list-name").value,
+          }),
+          headers: {
+            "Content-Type": "application/json",
+          },
+        })
+          .then(function (response) {
+            return response.json();
+          })
+          .then(function (jsonResponse) {
+            console.log(jsonResponse);
+            const liItem = document.createElement("LI");
+            liItem.innerHTML = jsonResponse["listName"];
+            document.getElementById("lists").appendChild(liItem);
+            document.getElementById("error").className = "hidden";
+          })
+          .catch(function () {
+            document.getElementById("error").className = "";
+          });
+      };
 
       const checkboxes = document.querySelectorAll(".check-completed");
       for (let i = 0; i < checkboxes.length; i++) {

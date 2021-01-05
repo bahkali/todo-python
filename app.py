@@ -38,13 +38,32 @@ def create_todo():
     error = False
     body={}
     try:
-        # description = request.form.get('description', '')
         description = request.get_json()['description']
         todo = Todo(description=description)
         db.session.add(todo)
         db.session.commit()
-        # return redirect(url_for('index'))
         body['description'] = todo.description
+    except:
+        error = True
+        db.session.rollback()
+        print(sys.exc_info())
+    finally:
+        db.session.close()
+    if error:
+        abort(400)
+    else:
+        return jsonify(body)
+
+@app.route('/todoLists/create', methods=['POST'])
+def create_list():
+    error = False
+    body={}
+    try:
+        listName = request.get_json()['listName']
+        list = TodoList(name=listName)
+        db.session.add(list)
+        db.session.commit()
+        body['listName'] = list.name
     except:
         error = True
         db.session.rollback()
